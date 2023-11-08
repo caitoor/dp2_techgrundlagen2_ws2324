@@ -1,0 +1,10 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define MQTT_SERVER "your-mqtt-host"
+#define MQTT_PORT 1883 
+#define WIFIMANAGER_SSID "faebs_ap"
+#define MQTT_TOPIC_TEMPERATURE "your-temp-topic"
+#define MQTT_TOPIC_HUMIDITY "your-humidity-topic"
+
+#endif 
