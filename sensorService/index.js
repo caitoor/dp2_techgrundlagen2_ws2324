@@ -4,6 +4,19 @@ const sqlite3 = require('sqlite3').verbose();
 const { v4: uuidv4 } = require('uuid');
 const createTables = require('./create_tables');
 
+// Überprüfung der Umgebungsvariablen
+const requiredEnvVars = [
+    'MQTT_BROKER_URL',
+    'MQTT_TEMPERATURE_TOPIC',
+    'MQTT_HUMIDITY_TOPIC',
+    'MQTT_LOGS_TOPIC'
+];
+
+const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+if (missingEnvVars.length > 0) {
+    console.error(`Fehlende Umgebungsvariablen: ${missingEnvVars.join(', ')}`);
+    process.exit(1);
+}
 
 // DATABASE STUFF:
 
@@ -51,7 +64,7 @@ mqttClient.on('connect', function () {
 });
 
 mqttClient.on('message', (topic, message) => {
-    if (topic === 'dp2/temperature') {
+    if (topic === temperatureTopic) {
         try {
             const data = JSON.parse(message.toString());
 
