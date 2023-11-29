@@ -1,11 +1,12 @@
 require('dotenv').config();
 const mqtt = require('mqtt');
 const sqlite3 = require('sqlite3').verbose();
+const createTables = require('./create_tables');
 
 
 // DATABASE STUFF:
 
-let db = new sqlite3.Database('./mqtt_data.db', (err) => {
+let db = new sqlite3.Database(`./${process.env.DATABASE_FILENAME}.db`, (err) => {
     if (err) {
         console.error(err.message);
     }
@@ -20,17 +21,9 @@ let db = new sqlite3.Database('./mqtt_data.db', (err) => {
     });
 });
 
-db.serialize(() => {
-    db.run(`CREATE TABLE IF NOT EXISTS temperature_data (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    temperature REAL,
-    mac TEXT,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-  )`);
-});
+createTables(db);
 
 // MQTT STUFF:
-
 const mqttClient = mqtt.connect(process.env.MQTT_BROKER_URL);
 
 mqttClient.on('connect', function () {
