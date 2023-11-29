@@ -1,6 +1,7 @@
 require('dotenv').config();
 const mqtt = require('mqtt');
 const sqlite3 = require('sqlite3').verbose();
+const { v4: uuidv4 } = require('uuid');
 const createTables = require('./create_tables');
 
 
@@ -24,19 +25,29 @@ let db = new sqlite3.Database(`./${process.env.DATABASE_FILENAME}.db`, (err) => 
 createTables(db);
 
 // MQTT STUFF:
-const mqttClient = mqtt.connect(process.env.MQTT_BROKER_URL);
+const uuid = uuidv4();
+const mqttClientId = `sensorservice_${uuid}`;
+
+const temperatureTopic = process.env.MQTT_TEMPERATURE_TOPIC;
+const humidityTopic = process.env.MQTT_HUMIDITY_TOPIC;
+const logsTopic = process.env.MQTT_LOGS_TOPIC;
+
+const mqttClient = mqtt.connect(process.env.MQTT_BROKER_URL, { clientId: mqttClientId });
 
 mqttClient.on('connect', function () {
-    mqttClient.subscribe('dp2/temperature', function (err) {
+    mqttClient.subscribe(temperatureTopic, function (err) {
         if (!err) {
-            console.log('Erfolgreich auf Thema "dp2/temperature" subscribed');
+            console.log(`Erfolgreich auf Thema "${temperatureTopic}" subscribed`);
         }
     });
-    mqttClient.subscribe('dp2/humidity', function (err) {
+    mqttClient.subscribe(humidityTopic, function (err) {
         if (!err) {
-            console.log('Erfolgreich auf Thema "dp2/humidity" subscribed');
+            console.log(`Erfolgreich auf Thema "${humidityTopic}" subscribed`);
         }
     });
+
+    const logMessage = `SensorService with Client-ID ${mqttClientId} verbunden. (Fabian)`;
+    mqttClient.publish(logsTopic, logMessage);
 });
 
 mqttClient.on('message', (topic, message) => {
