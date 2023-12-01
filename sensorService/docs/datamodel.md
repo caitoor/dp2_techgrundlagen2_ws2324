@@ -1,7 +1,7 @@
 [[../README.md | < Zur Übersicht]]
 
 Stand 30.11.2023
-# Entitites
+# Entitäten
 <table>
   <tr>
     <th colspan="3">Esp</th>
@@ -93,7 +93,7 @@ Stand 30.11.2023
 
 <table>
   <tr>
-    <th colspan="3">Gruppe</th>
+    <th colspan="3">Group</th>
   </tr>
   <tr>
     <td>id</td>
@@ -112,24 +112,24 @@ Stand 30.11.2023
   </tr>
 </table>
 
-# Mapping tables
+# Zuordnungstabellen
 
 <table>
   <tr>
-    <th colspan="3">GruppeUser</th>
+    <th colspan="3">GroupUser</th>
   </tr>
   <tr>
-    <td>gruppe_id (FK)</td>
+    <td>group_id (FK)</td>
     <td>user_id (FK)</td>
   </tr>
 </table>
 
 <table>
   <tr>
-    <th colspan="3">GruppeEsp</th>
+    <th colspan="3">groupEsp</th>
   </tr>
   <tr>
-    <td>gruppe_id (FK)</td>
+    <td>group_id (FK)</td>
     <td>esp_id (FK)</td>
   </tr>
 </table>
