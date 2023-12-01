@@ -16,11 +16,6 @@ Stand 30.11.2023
     <td>STRING</td>
     <td>UNIQUE</td>
   </tr>
-   <tr>
-    <td>creation_date</td>
-    <td>DATETIME</td>
-    <td>DEFAULT TIMESTAMP</td>
-  </tr>
      <tr>
     <td>owner</td>
     <td></td>
@@ -41,16 +36,6 @@ Stand 30.11.2023
     <td>type</td>
     <td>STRING</td>
     <td></td>
-  </tr>
-   <tr>
-    <td>createdAt</td>
-    <td>DATETIME</td>
-    <td>DEFAULT TIMESTAMP</td>
-  </tr>
-  <tr>
-    <td>modifiedAt</td>
-    <td>DATETIME</td>
-    <td>DEFAULT TIMESTAMP</td>
   </tr>
      <tr>
     <td>esp_id</td>
@@ -74,11 +59,6 @@ Stand 30.11.2023
     <td></td>
   </tr>
    <tr>
-    <td>createdAt</td>
-    <td>DATETIME</td>
-    <td>DEFAULT TIMESTAMP</td>
-  </tr>
-     <tr>
     <td>sensor_id</td>
     <td></td>
     <td>FOREIGN KEY (Sensor)</td>
@@ -109,16 +89,6 @@ Stand 30.11.2023
     <td>STRING</td>
     <td>UNIQUE</td>
   </tr>
-     <tr>
-    <td>createdAt</td>
-    <td>DATETIME</td>
-    <td>DEFAULT TIMESTAMP</td>
-  </tr>
-     <tr>
-    <td>modifiedAt</td>
-    <td>DATETIME</td>
-    <td>DEFAULT TIMESTAMP</td>
-  </tr>
 </table>
 
 <table>
@@ -135,17 +105,7 @@ Stand 30.11.2023
     <td>STRING</td>
     <td></td>
   </tr>
-     <tr>
-    <td>createdAt</td>
-    <td>DATETIME</td>
-    <td>DEFAULT TIMESTAMP</td>
-  </tr>
-     <tr>
-    <td>modifiedAt</td>
-    <td>DATETIME</td>
-    <td>DEFAULT TIMESTAMP</td>
-  </tr>
-     <tr>
+  <tr>
     <td>founder</td>
     <td></td>
     <td>FOREIGN KEY (User)</td>
