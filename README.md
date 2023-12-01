@@ -4,7 +4,6 @@
 
 ## Aufgaben (gestellt am 30.11.2023)
 
-
 1. Finde für jede Entität weitere mögliche Attribute. Um passende herauszufinden, kannst du dir überlegen, welche Features in Zukunft implementiert werden könnten / sollten.
 1. Zeichne dann ein Entity Relationship Diagramm (ERD) des Datenmodells mit allen
     - Entitäten und Attributen
@@ -21,3 +20,26 @@
 1. Ändere auch den Code des Node Scripts, dass die neu eintreffenden Werte korrekt in die neu angelegten Tabellen abgespeichert werden.
 1. **ADVANCED**: Wenn nun Sensorwerte empfangen werden, werden bislang die Mac-Adressen des sendenden ESPs gespeichert. Wir wollen aber die `Esp_id` als Foreign Key abspeichern. Frage also bei einem eintreffenden Wert ab, ob sich die `mac_address` bereits in der ESP-Tabelle befindet. Wenn ja, gib die ID zurück. Wenn nein, lege den ESP in der ESP-Tabelle an und gib auch die neue ID zurück. Wenn du es für sinnvoll hältst,  kannst du diese Aufgabe auch etwas leichter lösen, indem du im Datenmodell die Mac-Adresse eines ESP als Primary Key festlegst und keine ID vergibst. Passe dann aber auch den Rest entsprechend an.
 1. **VERY ADVANCED**: Wenn es bei der Speicherung von neuen ESPs zu Problemen kommt (insbesondere wenn du Temperatur- und Feuchtigkeitswerte gleichzeitig schickst), überlege dir, was mit dem Begriff „Race Conditions“ gemeint sein könnte und behebe das!
+
+## Weitere Bonusaufgaben
+
+1. ESP-Code optimieren:
+    - Schreibe den ESP-Code so um, dass man für Temperatur- und Feuchtigkeitswerte in der `config.h` einzelne Intervalle angeben kann, wie oft diese Messdaten versendet werden.
+    - Schreibe die allgemeine Funktion `sendData`, um alle Arten von Sensorwerten zu verschicken.
+    - Logge auf dem Broker unter Nennung der ClientID, wenn sich ein ESP verbunden hat.
+    - Stelle (z. B. durch ein `enum`) sicher, dass im Arduino-Code ausschließlich valide Sensortypen geschickt werden können.
+    - **Advanced:** Schreibe den Arduino-Code in sinnvoller Art und Weise objektorientiert um.
+1. Stelle sicher, dass dein Datenmodell es zulässt, dass User jederzeit einsehen können, welche Arten von Sensoren am ESP angeschlossen sind. Es ist jedoch nicht wichtig, dass gleiche Sensortypen untereinander unterschieden werden können.
+1. Erweitere das Datenmodell, damit folgende Features abgebildet werden und passe die `create_tables.js` und womöglich andere Skript-Teile entsprechend an:
+    - Benutzerrollen
+    - Status eines Nutzers aus einem Lookup Table an möglichen Zuständen (gesperrt / inaktiv / etc.)
+    - Soft Delete für User in Gruppen, ESPs in Gruppen, an ESPs angeschlossene Sensortypen, etc.
+    - Firmware- und Modell-Versionen (ESP8266 / ESP32 / etc.) der ESPs
+1. Ändere die `create_tables.js` so, dass du durch Nutzung der Library sqlite (`npm i sqlite`) Promises nutzt und auf die `db.serialize()`-Schreibweise mit Callbacks verzichten kannst. Dadurch wird der Code klarer.
+1. Funktionen im Node-Script:
+    - `function getMaxMeasurement(sensortype)`, am besten mit optionalem Parameter, wie weit in die Vergangenheit gesucht wird.
+    - `function getMinMeasurement(sensortype)`, dito.
+    - `function getLastMeasurements(espId, sensortype, count = 1)`, wenn count `null` ist, sollen alle verfügbaren Measurements gesendet werden.
+    - `function getMeasurementCount(espId, sensorType, startDate, endDate)`, die Daten sind optional.
+    - Weitere, eigene Abfragen, die interessant odernützlich sein könnten
+1. Stelle sicher, dass die Datenbankverbindung geschlossen wird, sobald dein Script beendet wird.
