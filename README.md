@@ -36,6 +36,7 @@
     - Soft Delete für User in Gruppen, ESPs in Gruppen, an ESPs angeschlossene Sensortypen, etc.
     - Firmware- und Modell-Versionen (ESP8266 / ESP32 / etc.) der ESPs
 1. Ändere die `create_tables.js` so, dass du durch Nutzung der Library sqlite (`npm i sqlite`) Promises nutzt und auf die `db.serialize()`-Schreibweise mit Callbacks verzichten kannst. Dadurch wird der Code klarer.
+1. Benenne die `create_tables.js` in `database.js` um und lagere alle Datenbank-bezogenen Funktionen in diese Funktion aus, also auch das Speichern der Werte, wenn eine MQTT-Nachricht empfangen wird.
 1. Funktionen im Node-Script:
     - `function getMaxMeasurement(sensortype)`, am besten mit optionalem Parameter, wie weit in die Vergangenheit gesucht wird.
     - `function getMinMeasurement(sensortype)`, dito.
