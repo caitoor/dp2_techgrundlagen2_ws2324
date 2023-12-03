@@ -44,3 +44,4 @@
     - `function getMeasurementCount(espId, sensorType, startDate, endDate)`, die Daten sind optional.
     - Weitere, eigene Abfragen, die interessant odernützlich sein könnten
 1. Stelle sicher, dass die Datenbankverbindung geschlossen wird, sobald dein Script beendet wird.
+1. Kürze deine `index.js` auf maximal 10 Zeilen Code (nach Code-Formatierung) durch sinnvolles Auslagern von unterschiedilchen Modulen. Idealerweise legst du einen `src`-Ordner an, in dem du Unterordner für Datenbank, MQTT, Utils, etc. anlegst.
