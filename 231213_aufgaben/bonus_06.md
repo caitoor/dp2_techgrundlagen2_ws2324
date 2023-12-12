@@ -1,0 +1,1 @@
+# Stelle sicher, dass die Datenbankverbindung geschlossen wird, sobald dein Script beendet wird.
