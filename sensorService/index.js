@@ -73,7 +73,7 @@ async function startMqtt() {
         if (topic === temperatureTopic) {
             try {
                 const data = JSON.parse(message.toString());
-    
+
                 // Überprüfe, ob die Werte NULL sind
                 if (data.temperature != null && data.mac != null) {
                     try {
@@ -90,14 +90,14 @@ async function startMqtt() {
             }
         }
     });
-    
 }
 
 async function startAPI() {
-    app.get('/temperature-data', async (req, res) => {
+    app.get('/latest-temperature-data', async (req, res) => {
         console.log("Endpunkt 'temperature-data' aufgerufen");
+        const rowCount = req.query.count ? req.query.count : 1;
         try {
-            const rows = await db.all('SELECT * FROM temperature_data ORDER BY timestamp DESC LIMIT 20');
+            const rows = await db.all(`SELECT * FROM temperature_data ORDER BY timestamp DESC LIMIT ${rowCount}`);
             if (rows.length === 0) {
                 console.log('Keine Daten gefunden');
                 res.status(404).send({ error: 'Keine Daten gefunden' });
@@ -110,7 +110,6 @@ async function startAPI() {
             res.status(500).send({ error: 'Fehler beim Abrufen der Daten' });
         }
     });
-
     // Server starten
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
