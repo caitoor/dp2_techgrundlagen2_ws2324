@@ -27,6 +27,22 @@ app.use(express.json());
 // DATABASE STUFF:
 
 let db;
+const uuid = uuidv4();
+const mqttClientId = `sensorservice_${uuid}`;
+
+const temperatureTopic = process.env.MQTT_TEMPERATURE_TOPIC;
+const humidityTopic = process.env.MQTT_HUMIDITY_TOPIC;
+const logsTopic = process.env.MQTT_LOGS_TOPIC;
+
+run();
+
+async function run() {
+    await startDb();
+    await createTables(db);
+    await startAPI();
+    startMqtt();
+}
+
 async function startDb() {
     try {
         db = await open({
@@ -35,50 +51,39 @@ async function startDb() {
         });
 
         console.log('Verbunden mit der SQLite-Datenbank.');
-        createTables(db);
-        startAPI();
 
     } catch (err) {
         console.error('Fehler beim Verbinden mit der Datenbank:', err);
     }
 }
-// MQTT STUFF:
-const uuid = uuidv4();
-const mqttClientId = `sensorservice_${uuid}`;
 
-const temperatureTopic = process.env.MQTT_TEMPERATURE_TOPIC;
-const humidityTopic = process.env.MQTT_HUMIDITY_TOPIC;
-const logsTopic = process.env.MQTT_LOGS_TOPIC;
-
-async function startMqtt() {
-    const mqttClient = await mqtt.connect(process.env.MQTT_BROKER_URL, { clientId: mqttClientId });
+function startMqtt() {
+    const mqttClient = mqtt.connect(process.env.MQTT_BROKER_URL, { clientId: mqttClientId });
 
     mqttClient.on('connect', function () {
         mqttClient.subscribe(temperatureTopic, function (err) {
             if (!err) {
                 console.log(`Erfolgreich auf Thema "${temperatureTopic}" subscribed`);
             }
-        });
-        mqttClient.subscribe(humidityTopic, function (err) {
-            if (!err) {
-                console.log(`Erfolgreich auf Thema "${humidityTopic}" subscribed`);
+            else {
+                console.error(`Fehler beim Subscriben auf Thema "${temperatureTopic}": ${err}`);
             }
         });
 
-        const logMessage = `SensorService with Client-ID ${mqttClientId} verbunden. (Fabian)`;
-        mqttClient.publish(logsTopic, logMessage);
+       const logMessage = `SensorService with Client-ID ${mqttClientId} verbunden. (Fabian)`;
+        mqttClient.publish(logsTopic, logMessage); 
     });
 
     mqttClient.on('message', async (topic, message) => {
         if (topic === temperatureTopic) {
+            // console.log("Nachricht empfangen");
             try {
                 const data = JSON.parse(message.toString());
-
                 // Überprüfe, ob die Werte NULL sind
                 if (data.temperature != null && data.mac != null) {
                     try {
                         await db.run('INSERT INTO temperature_data (temperature, mac) VALUES (?, ?)', [data.temperature, data.mac]);
-                        // console.log(`Daten gespeichert: ${message.toString()}`);
+                        console.log(`Daten gespeichert: ${message.toString()}`);
                     } catch (err) {
                         console.error(`Fehler beim Speichern der Daten: ${err}`);
                     }
@@ -115,8 +120,4 @@ async function startAPI() {
     app.listen(PORT, () => {
         console.log(`Server läuft auf Port ${PORT}`);
     });
-
-    startMqtt();
 }
-
-startDb();
