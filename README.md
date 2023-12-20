@@ -1,47 +1,95 @@
 # dp2_techgrundlagen2_ws2324
 
-[[docs/datamodel.md | Zum Basis-Datenmodell aus dem Unterricht]]
+# DP2 | Technische Grundlagen 2 und Datenbanken | WS 23/24
 
-## Aufgaben (gestellt am 30.11.2023)
+Die Abgabe des Projekts erfolgt in den beiden Fächern Technische Grundlagen 2 und Datenbanken als ein Gesamtprojekt.
 
-1. Finde für jede Entität weitere mögliche Attribute. Um passende herauszufinden, kannst du dir überlegen, welche Features in Zukunft implementiert werden könnten / sollten.
-1. Zeichne dann ein Entity Relationship Diagramm (ERD) des Datenmodells mit allen
-    - Entitäten und Attributen
-    - Beziehungen (Verben)
-    - Kardinalitäten
-1. Füge allen Entitäten in diesem Datenmodell das Attribut `createdAt` (Timestamp der Erstellung der Zeile) und `modifiedAt` (Timestamp der letzten Änderung einer Zeile) hinzu – aber natürlich jeweils nur da, wo es auch Sinn macht.
-1. Überlegt euch die möglichen Implikationen dieses Vorgehens für unsere bisherigen Zuordnungstabellen.
-1. Kompliziert wird vermutlich die Entität `Sensor`. Wie erhaltet ihr die ID eines Sensors? Der DHT11 hat keine einzigartige Hardware-ID, die man auslesen kann. Überlegt euch: Ist es wünschenswert, dass man Sensoren zwischen den ESPs tauschen kann? Ist es wichtig, die einzelnen Sensoren zu unterscheiden? Wie sieht es mit hostorischen Daten aus, die vermutlich eher Raum- als Sensor-bezogen dargestellt werden sollen? Wäge ab und begründe, in welchem Fall eine Entität Sensor Sinn macht – und in welchen Fällen nicht. Passe das Datenmodell auf Basis dieser Entscheidung womöglich an.
-1. Passe das Datenmodell und das ERD für alle gemachten Änderungen an: Attribute (zusätzliche / optionale / gelöschte), Zeitstempel, hinzugefügte oder gelöschte Entitäten und Zuordnungstabellen, Kardinalitäten und Beziehungen. Mache davor eine Kopie des alten Standes.
-1. Überprüfe, wie und wo die Sensordaten am sinnvollsten für das entwickelte Datenmodell geschickt werden müssen (JSON-Struktur / Wie viele bzw. welche Topics?) und ändere den Code auf dem ESP entsprechend.
-1. Wenn du von dem ganzen Data Modelling nicht genug bekommen kannst, ändere das ERD des Schul-Beispiels aus dem Unterricht so ab, dass es zusätzlich die Entität `Fach` gibt. Außerdem sollen erine unbestimmte Zahl an Zusatzämtern (Medienwart, Strahlenschutzbeauftragter, etc.) für jeden Jahren gespeichert werden, sodass auch auf historische Daten für diese Ämter zugänglich sind – also z. B. die Frage: "In welchem Jahr war welcher Lehrer Medienwart?". Diese Übung ist rein optional, kann also übersprungen werden (gibt dann aber keinen Punkt).
-1. Erzeuge in der `create_tables.js` alle für dein Datenmodell relevanten Tabellen nun entsprechend.
-1. Kümmere dich in dem Zuge gleich noch darum, dass wenn ihr die `mqtt_data.db` löscht und dann das node Script startet, der Fehler `SQLITE_ERROR: no such table: temperature_data` nicht auftritt. Finde heraus, warum dieser Fehler überhaupt entsteht.
-1. Ändere auch den Code des Node Scripts, dass die neu eintreffenden Werte korrekt in die neu angelegten Tabellen abgespeichert werden.
-1. **ADVANCED**: Wenn nun Sensorwerte empfangen werden, werden bislang die Mac-Adressen des sendenden ESPs gespeichert. Wir wollen aber die `Esp_id` als Foreign Key abspeichern. Frage also bei einem eintreffenden Wert ab, ob sich die `mac_address` bereits in der ESP-Tabelle befindet. Wenn ja, gib die ID zurück. Wenn nein, lege den ESP in der ESP-Tabelle an und gib auch die neue ID zurück. Wenn du es für sinnvoll hältst,  kannst du diese Aufgabe auch etwas leichter lösen, indem du im Datenmodell die Mac-Adresse eines ESP als Primary Key festlegst und keine ID vergibst. Passe dann aber auch den Rest entsprechend an.
-1. **VERY ADVANCED**: Wenn es bei der Speicherung von neuen ESPs zu Problemen kommt (insbesondere wenn du Temperatur- und Feuchtigkeitswerte gleichzeitig schickst), überlege dir, was mit dem Begriff „Race Conditions“ gemeint sein könnte und behebe das!
+## Projektbeschreibung
 
-## Weitere Bonusaufgaben
+- Fiktive Produktentwicklung bzw. aus Produktperspektive argumentierte Vorgehensweise
+- Verteiltes System, prototypisch-funktional umgesetzt
+- Datenbank-Anbindung
+- testbar
+- attraktiv ausstellbar
 
-1. ESP-Code optimieren:
-    - Schreibe den ESP-Code so um, dass man für Temperatur- und Feuchtigkeitswerte in der `config.h` einzelne Intervalle angeben kann, wie oft diese Messdaten versendet werden.
-    - Schreibe die allgemeine Funktion `sendData`, um alle Arten von Sensorwerten zu verschicken.
-    - Logge auf dem Broker unter Nennung der ClientID, wenn sich ein ESP verbunden hat.
-    - Stelle (z. B. durch ein `enum`) sicher, dass im Arduino-Code ausschließlich valide Sensortypen geschickt werden können.
-    - **Advanced:** Schreibe den Arduino-Code in sinnvoller Art und Weise objektorientiert um.
-1. Stelle sicher, dass dein Datenmodell es zulässt, dass User jederzeit einsehen können, welche Arten von Sensoren am ESP angeschlossen sind. Es ist jedoch nicht wichtig, dass gleiche Sensortypen untereinander unterschieden werden können.
-1. Erweitere das Datenmodell, damit folgende Features abgebildet werden und passe die `create_tables.js` und womöglich andere Skript-Teile entsprechend an:
-    - Benutzerrollen
-    - Status eines Nutzers aus einem Lookup Table an möglichen Zuständen (gesperrt / inaktiv / etc.)
-    - Soft Delete für User in Gruppen, ESPs in Gruppen, an ESPs angeschlossene Sensortypen, etc.
-    - Firmware- und Modell-Versionen (ESP8266 / ESP32 / etc.) der ESPs
-1. Ändere die `create_tables.js` so, dass du durch Nutzung der Library sqlite (`npm i sqlite`) Promises nutzt und auf die `db.serialize()`-Schreibweise mit Callbacks verzichten kannst. Dadurch wird der Code klarer.
-1. Benenne die `create_tables.js` in `database.js` um und lagere alle Datenbank-bezogenen Funktionen in diese Funktion aus, also auch das Speichern der Werte, wenn eine MQTT-Nachricht empfangen wird.
-1. Funktionen im Node-Script:
-    - `function getMaxMeasurement(sensortype)`, am besten mit optionalem Parameter, wie weit in die Vergangenheit gesucht wird.
-    - `function getMinMeasurement(sensortype)`, dito.
-    - `function getLastMeasurements(espId, sensortype, count = 1)`, wenn count `null` ist, sollen alle verfügbaren Measurements gesendet werden.
-    - `function getMeasurementCount(espId, sensorType, startDate, endDate)`, die Daten sind optional.
-    - Weitere, eigene Abfragen, die interessant odernützlich sein könnten
-1. Stelle sicher, dass die Datenbankverbindung geschlossen wird, sobald dein Script beendet wird.
-1. Kürze deine `index.js` auf maximal 10 Zeilen Code (nach Code-Formatierung) durch sinnvolles Auslagern von unterschiedilchen Modulen. Idealerweise legst du einen `src`-Ordner an, in dem du Unterordner für Datenbank, MQTT, Utils, etc. anlegst.
+## Must Have (bestehens-relevant)
+
+- Sensormodul, das Daten erhebt und in ein System einspeist
+- Backend mit eigener dokumentierter API für HTTP-Requests
+- Anzeige der gespeicherten Sensorwerte in einem Frontend (freie Auswahl des Frameworks)
+- Nutzung von `.env` oder Ähnlichem, um Credentials auf GitHub zu verbergen.
+- Ausformuliertes Datenmodell inkl. Entity-Relationship-Model in Ausstellungsposterqualität
+- .gitignore, in der `node_modules` enthalten ist. Hochgeladener `node_modules`-Ordner = Schelle.
+- Projekt-Doku als README.md inklusive 1-2 einleitenden Absätzen als allgemeine Produktbeschreibung.
+
+## Should Have (~ relevant für die Note vor dem Komma)
+
+- User-Authentifizierung (Register / Login / Logout)
+- Anzeige / Visualisierung der Sensorwerte
+- Gedanken zur und Entwicklungen in Hinblick auf die Skalierbarkeit des Systems (mehr User / mehr Sensoren / etc.)
+- Microservices-Infrastruktur (User Service, Data Service, etc.)
+- Produktname und irgendeine Form von Logo
+- Zuordnung der User zu ihren Sensormodulen, damit sie nur ihre eigenen bzw. berechtigten Sensoren sehen
+- UX-getriebenes Konzept in der Produktentwicklung
+
+
+## Could Have (~ relevant für die Note nach dem Komma)
+
+- Interessantere, komplexere Datenabfragen und -darstellungen
+- Gut gestaltetes Frontend
+- Prototyping: Cases für Komponenten usw., 3d-gedruckt oder Lasercuts
+- Aufwändige Datenvisualisierungen über Graphen hinaus
+- Zuordnung neue Sensormodule zu User (Pairing-Prozess), zumindest als Überlegung
+- User-Authentifizierung über distinguierte Libraries / Frameworks (z. B. Passport, JSON Web Tokens)
+- Session-Timeouts
+- Sensor- / ESP-Informationen im Frontend bearbeiten
+- Deep Sleep-Implementierung
+- Onboarding: Logon speichern / Cookie setzen / localStorage / Wizard statistische / prognostische Auswertung der Daten (AI?)
+- User-Authentifizierung über externen Dienst (z. B. Google)
+- Alerts / Alarme Konfigurieren einzelner Sensormodule (z. B. Intervalle ändern)
+- OpenAPI / Swagger.io / [apicur.io](http://apicur.io) nutzen
+- Benutzerrollen (nur ansehen, editieren, etc.)
+- Überlegungen zur Energieversorgung (Laufzeit, Energiespeicher, Lademöglichkeit, etc.)
+- Lauffähige Docker-Container / shell + batch für alle Images + Container
+- Skalierungsplan / Business Model
+- Externe APIs einbinden, z. B. OpenAI
+- ...
+
+## Bewertungskriterien
+
+- alle Anforderungen erfüllt?
+- lauffähig?
+- eigener Code über Unterrichtsprojekt hinaus?
+→ bestanden
+
+Von der 4,0 zur 1,0 dann relevant:
+- Komplexität des Projekts
+- Herangehensweise, Umgang mit Schwierigkeiten im Verlauf
+- the more, the better (Anzahl sinnvoller Features)
+- the better, the better (Codequalität, Struktur von System und Code)
+- the smarter, the better (Konzept, Komplexität)
+
+**Hinweis:** Anwesenheit, Mitarbeit und Beiträge im Kurs (Quantität und Qualität) sind mit 30% der Gesamtnote gewichtet.
+
+**Tipp:** Macht irgendwo eine übersichtliche Dokumentationsseite, in der ihr eure Must / Should / Could Haves auflistet, damit ich nichts übersehe.
+
+## Abgabemodalitäten
+
+- Abgabetermin: 
+  - vermutlich erste Woche nach Vorlesungsschluss (exaktes Datum kommt noch)
+  - Alle Ergebnisse werden zum Schluss in der Gruppe gemeinsam angeschaut und von den Urheber*innen kurz vorgestellt (ohne Folien)
+- Abgabeumfang:
+    - GitHub Monorepo (Abgabe des Links)
+    - .env Files auf anderem Kanal (Slack / Mail / Drive)
+    - einige Fotos und Screenshots des Projekts zu Dokumentations- und Ausstellungszwecken
+    - Screencast, der alle Features zeigt (in Google Drive, nicht im Repo!)
+
+
+## Themenideen
+
+- Aquarienüberwachung / Poolüberwachung
+- Luftqualitäts-Monitoring
+- Indoor-Positionierung (Lab-Heatmap)
+- Zimmerpflanzen
+- Vogelhäuschen
+- Sauerteig-Überwachung
