@@ -40,6 +40,7 @@ Die Abgabe des Projekts erfolgt in den beiden Fächern Technische Grundlagen 2 u
 - Prototyping: Cases für Komponenten usw., 3d-gedruckt oder Lasercuts
 - Aufwändige Datenvisualisierungen über Graphen hinaus
 - Zuordnung neue Sensormodule zu User (Pairing-Prozess), zumindest als Überlegung
+- Nutzung von mongoose o. Ä. und Models
 - User-Authentifizierung über distinguierte Libraries / Frameworks (z. B. Passport, JSON Web Tokens)
 - Session-Timeouts
 - Sensor- / ESP-Informationen im Frontend bearbeiten
@@ -50,9 +51,12 @@ Die Abgabe des Projekts erfolgt in den beiden Fächern Technische Grundlagen 2 u
 - OpenAPI / Swagger.io / [apicur.io](http://apicur.io) nutzen
 - Benutzerrollen (nur ansehen, editieren, etc.)
 - Überlegungen zur Energieversorgung (Laufzeit, Energiespeicher, Lademöglichkeit, etc.)
+- Echtzeit-Daten mit Websockets (`socket.io`)
 - Lauffähige Docker-Container / shell + batch für alle Images + Container
 - Skalierungsplan / Business Model
 - Externe APIs einbinden, z. B. OpenAI
+- Security Features (Zertifikate, Verschlüsselung, ...)
+- Gedanken zur Nachhaltigkeit des Projekts und evtl. Berücksichtigung in der Produktplanung
 - ...
 
 ## Bewertungskriterien
@@ -64,6 +68,7 @@ Die Abgabe des Projekts erfolgt in den beiden Fächern Technische Grundlagen 2 u
 
 Von der 4,0 zur 1,0 dann relevant:
 - Komplexität des Projekts
+- Innovationsgrad des Projekts
 - Herangehensweise, Umgang mit Schwierigkeiten im Verlauf
 - the more, the better (Anzahl sinnvoller Features)
 - the better, the better (Codequalität, Struktur von System und Code)
@@ -93,3 +98,5 @@ Von der 4,0 zur 1,0 dann relevant:
 - Zimmerpflanzen
 - Vogelhäuschen
 - Sauerteig-Überwachung
+- Wetterstation
+- Smart Home Security System
