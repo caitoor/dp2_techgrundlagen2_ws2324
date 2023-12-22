@@ -5,6 +5,8 @@ const sqlite3 = require('sqlite3').verbose();
 const { open } = require('sqlite');
 const { v4: uuidv4 } = require('uuid');
 const createTables = require('./create_tables');
+const cors = require('cors');
+const axios = require('axios');
 
 // Überprüfung der Umgebungsvariablen
 const requiredEnvVars = [
@@ -23,6 +25,7 @@ if (missingEnvVars.length > 0) {
 // Express initialisieren
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 // DATABASE STUFF:
 
@@ -70,8 +73,8 @@ function startMqtt() {
             }
         });
 
-       const logMessage = `SensorService with Client-ID ${mqttClientId} verbunden. (Fabian)`;
-        mqttClient.publish(logsTopic, logMessage); 
+        const logMessage = `SensorService with Client-ID ${mqttClientId} verbunden. (Fabian)`;
+        mqttClient.publish(logsTopic, logMessage);
     });
 
     mqttClient.on('message', async (topic, message) => {
@@ -115,7 +118,45 @@ async function startAPI() {
             res.status(500).send({ error: 'Fehler beim Abrufen der Daten' });
         }
     });
-    // Server starten
+
+    app.post('/add-esp-device', async (req, res) => {
+        console.log("Endpunkt 'add-esp-device' aufgerufen");
+        const { mac, username } = req.body;
+
+        if (!mac || !username) {
+            console.log('MAC-Adresse und Benutzername sind erforderlich');
+            return res.status(400).send({ error: 'MAC-Adresse und Benutzername sind erforderlich' });
+        }
+        else {
+            console.log('MAC-Adresse und Benutzername sind vorhanden');
+        }
+
+        //überprüfe JWT:
+        const authheader = req.headers.authorization;
+        const token = authheader && authheader.split(' ')[1];
+
+        try {
+            const validationResponse = await axios.get('http://localhost:3001/validate-token', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            
+            console.log('Token-Validierung erfolgreich');
+            console.log(validationResponse.data);
+            if (!validationResponse.data.isValid) {
+                console.log('Token ist ungültig');
+                return res.status(403).send({ error: 'Token ist ungültig' });
+            }
+            console.log('Token ist gültig');
+            const result = await db.run(`INSERT INTO esp_devices (mac, username) VALUES (?, ?)`, [mac, username]);
+            console.log('ESP-Gerät hinzugefügt mit ID:', result.lastID);
+            res.status(200).send({ message: 'ESP-Gerät erfolgreich hinzugefügt', id: result.lastID });
+        } catch (err) {
+            console.error('Fehler beim Hinzufügen des ESP-Geräts:', err);
+            res.status(500).send('Fehler beim Hinzufügen des ESP-Geräts');
+        }
+    });
+
+
     const PORT = process.env.SENSORSERVICE_PORT || 3000;
     app.listen(PORT, () => {
         console.log(`Server läuft auf Port ${PORT}`);

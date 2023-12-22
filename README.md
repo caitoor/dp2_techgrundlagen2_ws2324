@@ -46,7 +46,7 @@ Die Abgabe des Projekts erfolgt in den beiden Fächern Technische Grundlagen 2 u
 - Sensor- / ESP-Informationen im Frontend bearbeiten
 - Deep Sleep-Implementierung
 - Onboarding: Logon speichern / Cookie setzen / localStorage / Wizard statistische / prognostische Auswertung der Daten (AI?)
-- User-Authentifizierung über externen Dienst (z. B. Google)
+- User-Authentifizierung über externen Dienst (OAuth, z. B. Google)
 - Alerts / Alarme Konfigurieren einzelner Sensormodule (z. B. Intervalle ändern)
 - OpenAPI / Swagger.io / [apicur.io](http://apicur.io) nutzen
 - Benutzerrollen (nur ansehen, editieren, etc.)
